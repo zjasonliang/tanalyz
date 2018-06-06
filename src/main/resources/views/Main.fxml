@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/materialfx-v0_3.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+<VBox prefHeight="800.0" prefWidth="1280.0" stylesheets="@../css/materialfx-v0_3.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -62,9 +62,9 @@
     </MenuBar>
     <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../css/materialfx-v0_3.css" VBox.vgrow="ALWAYS">
       <items>
-            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="60.0" spacing="10.0">
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="60.0" spacing="10.0">
                <children>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="tagButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -100,7 +100,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <VBox prefHeight="200.0" prefWidth="100.0" />
+                  <HBox prefHeight="300.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                   <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -157,7 +157,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </VBox>
-        <AnchorPane maxWidth="-Infinity" prefWidth="160.0" />
+        <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="160.0" />
       </items>
     </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
