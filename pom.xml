@@ -23,6 +23,16 @@
             <artifactId>controlsfx</artifactId>
             <version>8.40.14</version>
         </dependency>
+        <dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>8.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.robbypond</groupId>
+            <artifactId>boilerpipe</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

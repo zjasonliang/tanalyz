@@ -62,8 +62,26 @@
     </MenuBar>
     <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../css/materialfx-v0_3.css" VBox.vgrow="ALWAYS">
       <items>
-            <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="60.0" spacing="10.0">
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="60.0" spacing="15.0">
                <children>
+                  <Button fx:id="singleDocButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleSingleDocButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/icons/single-doc.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="multipleDocButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/icons/multiple-docs.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                   <Button fx:id="tagButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -73,7 +91,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="posButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handlePOSButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -82,7 +100,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="nerButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleNERButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -91,7 +109,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="findButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -101,7 +119,7 @@
                      </graphic>
                   </Button>
                   <HBox prefHeight="300.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -110,7 +128,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="moreButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -124,7 +142,7 @@
                   <Insets />
                </opaqueInsets>
                <padding>
-                  <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                  <Insets bottom="15.0" left="5.0" right="5.0" top="15.0" />
                </padding>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0">
@@ -145,19 +163,30 @@
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="searchButton" mnemonicParsing="false" text="Search">
+                        <Pane>
                            <HBox.margin>
                               <Insets />
-                           </HBox.margin></Button>
+                           </HBox.margin>
+                           <children>
+                              <Button fx:id="searchButton" alignment="TOP_CENTER" mnemonicParsing="false" text="Search" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Pane>
                      </children>
                   </HBox>
-                  <WebView fx:id="webView" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
+                  <AnchorPane fx:id="webViewAnchorPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <WebView fx:id="webView" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </VBox>
-        <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="160.0" />
+        <AnchorPane fx:id="rightAnchorPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="250.0" />
       </items>
     </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
