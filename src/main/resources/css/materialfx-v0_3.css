@@ -240,7 +240,7 @@
  *                                                                             *
  ******************************************************************************/
 .check-box {
-    -fx-padding: 10;
+    -fx-padding: 0;
 }
 
 .check-box .text {
@@ -263,8 +263,7 @@
 }
 
 .check-box:focused > .box {
-    -fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.30), 6.0, 0.3, 0,
-    0);
+    /*-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.30), 6.0, 0.3, 0, 0);*/
 }
 
 .check-box:selected > .box > .mark {
@@ -551,6 +550,7 @@
 .separator {
     -fx-padding: 16 -16 16 -16;
 }
+
 
 /*******************************************************************************
  *                                                                             *

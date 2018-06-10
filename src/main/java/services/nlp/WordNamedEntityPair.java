@@ -2,9 +2,9 @@ package services.nlp;
 
 /**
  * 	A	data	structure	representation	for	a	recognized	named	entity
- * 	e.g.	word	=	"China",	namedEntityType	=	"Country"
+ * 	e.g.	word	=	"China",	namedEntity	=	"Country"
  */
-public class NamedEntity {
+public class WordNamedEntityPair {
     String word;
-    String namedEntityType;
+    NER namedEntity;
 }

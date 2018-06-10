@@ -26,31 +26,15 @@
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem fx:id="newTextButton" mnemonicParsing="false" onAction="#showEditor" text="New Text" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
+            <MenuItem mnemonicParsing="false" onAction="#loadHTMLFileToDisplay" text="Open…" />
             <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
+            <MenuItem mnemonicParsing="false" onAction="#closeViewWindow" text="Close" />
+            <MenuItem mnemonicParsing="false" onAction="#saveHTMLPageAs" text="Save Page As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Preferences…" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -73,7 +57,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="multipleDocButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="multipleDocsButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -168,7 +152,12 @@
                               <Insets />
                            </HBox.margin>
                            <children>
-                              <Button fx:id="searchButton" alignment="TOP_CENTER" mnemonicParsing="false" text="Search" />
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Button fx:id="searchButton" alignment="TOP_CENTER" mnemonicParsing="false" text="Search" />
+                                    <Button fx:id="extractButton" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#showExtractedHTML" text="Extract" />
+                                 </children>
+                              </HBox>
                            </children>
                            <opaqueInsets>
                               <Insets />

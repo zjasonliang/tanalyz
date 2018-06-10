@@ -16,12 +16,21 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
+import org.w3c.dom.html.HTMLDocument;
+import services.util.HTMLHelper;
 
+import javax.sound.midi.Soundbank;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
 
@@ -37,21 +46,26 @@ public class MainController {
     private TextField urlTextField;
 
     @FXML
-    private Button searchButton;
+    private Button searchButton, extractButton;
 
     @FXML
-    private Button tagButton, posButton, nerButton, findButton, settingsButton, moreButton;
+    private Button singleDocButton, multipleDocsButton,
+            tagButton, posButton, nerButton, findButton, settingsButton, moreButton;
 
     private WebEngine webEngine;
+
+    private File openedHTMLFile;
 
     public void initialize() {
         this.setComponentDepths();
         this.webEngine = this.webView.getEngine();
-        this.webEngine.load("https://www.baidu.com");
+        this.webEngine.load("https://en.wikipedia.org/wiki/Neuroscience");
         this.enableTextFieldAutoCompletion();
     }
 
     private void setComponentDepths() {
+        JFXDepthManager.setDepth(singleDocButton, 2);
+        JFXDepthManager.setDepth(multipleDocsButton, 2);
         JFXDepthManager.setDepth(tagButton, 2);
         JFXDepthManager.setDepth(posButton, 2);
         JFXDepthManager.setDepth(nerButton, 2);
@@ -60,6 +74,7 @@ public class MainController {
         JFXDepthManager.setDepth(moreButton, 2);
 
         JFXDepthManager.setDepth(searchButton, 2);
+        JFXDepthManager.setDepth(extractButton, 2);
 
         JFXDepthManager.setDepth(webViewAnchorPane, 2);
     }
@@ -89,8 +104,8 @@ public class MainController {
 
     public void showEditor(ActionEvent event) throws IOException {
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("views/Editor.fxml"));
-        root.getStylesheets().add(getClass().getResource("css/materialfx-v0_3.css").toString());
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/Editor.fxml"));
+        root.getStylesheets().add(getClass().getClassLoader().getResource("css/materialfx-v0_3.css").toString());
         stage.setScene(new Scene(root));
         stage.show();
     }
@@ -115,7 +130,7 @@ public class MainController {
     }
 
     public void handleSingleDocButtonClicked(ActionEvent event) {
-        if (this.webEngine.getDocument() == null) {
+        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
             showNoPageLoadedAlert();
         } else {
             rightAnchorPane.getChildren().clear();
@@ -129,7 +144,7 @@ public class MainController {
     }
 
     public void handlePOSButtonClicked(ActionEvent event) throws IOException {
-        if (this.webEngine.getDocument() == null) {
+        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
             showNoPageLoadedAlert();
         } else {
             rightAnchorPane.getChildren().clear();
@@ -139,7 +154,7 @@ public class MainController {
     }
 
     public void handleNERButtonClicked(ActionEvent event) throws IOException {
-        if (this.webEngine.getDocument() == null) {
+        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
             showNoPageLoadedAlert();
         } else {
             rightAnchorPane.getChildren().clear();
@@ -148,4 +163,60 @@ public class MainController {
         }
     }
 
+    public void loadHTMLFileToDisplay() throws MalformedURLException {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle("Open Text File");
+
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        if (openedHTMLFile != null) {
+            fileChooser.setInitialDirectory(openedHTMLFile.getParentFile());
+        }
+
+        openedHTMLFile = fileChooser.showOpenDialog(null);
+
+        URL fileURL = openedHTMLFile.toURI().toURL();
+        System.out.println(fileURL);
+        this.webEngine.load(fileURL.toString());
+    }
+
+    public void closeViewWindow() {
+        this.webEngine.load(null);
+        this.rightAnchorPane.getChildren().clear();
+    }
+
+
+    public void saveHTMLPageAs() {
+        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
+            showNoPageLoadedAlert();
+        } else {
+
+            FileChooser fileChooser = new FileChooser();
+
+            // Set extension filter
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");
+            fileChooser.getExtensionFilters().add(extFilter);
+
+            // Show save file dialog
+            File file = fileChooser.showSaveDialog(null);
+
+            if (file != null) {
+                HTMLHelper.saveDocument(this.webEngine.getDocument(), file);
+            }
+        }
+    }
+
+
+    public void showExtractedHTML() throws Exception {
+        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
+            showNoPageLoadedAlert();
+        } else {
+            URI uri = new URI(this.webEngine.getDocument().getDocumentURI());
+            String extractedHTMLString = HTMLHelper.getExtractedHTMLString(uri.toURL());
+            this.webEngine.loadContent(extractedHTMLString);
+        }
+    }
 }

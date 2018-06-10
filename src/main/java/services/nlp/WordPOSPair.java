@@ -6,8 +6,7 @@ package services.nlp;
  *          word2   =   "fly",      posTag  =   "v"
  *          word3   =   "。",       posTag  =   "wp"
  */
-public class NamedPos {
+public class WordPOSPair {
     String word;
-    String namedPos;
-
+    POS pos;
 }
