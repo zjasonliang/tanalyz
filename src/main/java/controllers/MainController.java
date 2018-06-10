@@ -1,6 +1,8 @@
 package controllers;
 
 import com.jfoenix.effects.JFXDepthManager;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +24,7 @@ import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import org.w3c.dom.html.HTMLDocument;
+import services.nlp.Text;
 import services.util.HTMLHelper;
 
 import javax.sound.midi.Soundbank;
@@ -56,11 +59,29 @@ public class MainController {
 
     private File openedHTMLFile;
 
+    private Text currenlyLoadedText;
+
     public void initialize() {
         this.setComponentDepths();
         this.webEngine = this.webView.getEngine();
-        this.webEngine.load("https://en.wikipedia.org/wiki/Neuroscience");
+        // this.webEngine.load("https://en.wikipedia.org/wiki/Neuroscience");
+        loadPage("https://en.wikipedia.org/wiki/Neuroscience");
         this.enableTextFieldAutoCompletion();
+    }
+
+    public void loadPage(String url) {
+        this.webEngine.load(url);
+
+        this.webEngine.getLoadWorker().stateProperty().addListener(
+                (ObservableValue<? extends Worker.State> observable,
+                 Worker.State oldValue,
+                 Worker.State newValue) -> {
+                    if( newValue != Worker.State.SUCCEEDED ) {
+                        return;
+                    }
+                    String htmlString = HTMLHelper.getDocumentString(this.webEngine.getDocument());
+                    currenlyLoadedText = new Text(htmlString);
+                } );
     }
 
     private void setComponentDepths() {
@@ -93,7 +114,8 @@ public class MainController {
             url = "http://" + url;
         }
 
-        this.webEngine.load(url);
+        // this.webEngine.load(url);
+        loadPage(url);
     }
 
     @FXML

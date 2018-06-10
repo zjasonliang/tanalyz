@@ -64,5 +64,6 @@ public class SingleDocParameterPanelController {
 
     public void analyze() {
         showResultsWindow();
+
     }
 }

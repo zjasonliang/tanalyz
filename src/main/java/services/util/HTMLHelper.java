@@ -19,7 +19,7 @@ import java.net.URL;
 
 public class HTMLHelper {
 
-    public static void getDocumentString(Document document) {
+    public static String getDocumentString(Document document) {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer = null;
 
@@ -43,6 +43,8 @@ public class HTMLHelper {
         } catch (TransformerException e) {
             e.printStackTrace();
         }
+
+        return stringWriter.toString();
     }
 
     /**
