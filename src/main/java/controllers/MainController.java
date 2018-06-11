@@ -21,6 +21,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.DataModel;
+import model.Prechecked;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
@@ -53,8 +54,9 @@ public class MainController {
     private Button searchButton, extractButton;
 
     @FXML
-    private Button singleDocButton, multipleDocsButton,
-            tagButton, posButton, nerButton, findButton, settingsButton, moreButton;
+    private Button singleDocButton,
+            posButton, nerButton, wordFrequencyButton, wordCloudButton,
+            settingsButton, moreButton;
 
     private WebEngine webEngine;
 
@@ -67,7 +69,7 @@ public class MainController {
         this.webEngine = this.webView.getEngine();
         model.webEngine = this.webEngine;
         // this.webEngine.load("https://en.wikipedia.org/wiki/Neuroscience");
-        loadPage("https://en.wikipedia.org/wiki/Neuroscience");
+        loadPage("http://pku.edu.cn/about/index.htm");
         this.enableTextFieldAutoCompletion();
     }
 
@@ -92,11 +94,13 @@ public class MainController {
 
     private void setComponentDepths() {
         JFXDepthManager.setDepth(singleDocButton, 2);
-        JFXDepthManager.setDepth(multipleDocsButton, 2);
-        JFXDepthManager.setDepth(tagButton, 2);
+        // JFXDepthManager.setDepth(multipleDocsButton, 2);
+        // JFXDepthManager.setDepth(tagButton, 2);
         JFXDepthManager.setDepth(posButton, 2);
         JFXDepthManager.setDepth(nerButton, 2);
-        JFXDepthManager.setDepth(findButton, 2);
+        // JFXDepthManager.setDepth(findButton, 2);
+        JFXDepthManager.setDepth(wordFrequencyButton, 2);
+        JFXDepthManager.setDepth(wordCloudButton, 2);
         JFXDepthManager.setDepth(settingsButton, 2);
         JFXDepthManager.setDepth(moreButton, 2);
 
@@ -147,16 +151,16 @@ public class MainController {
         stage.show();
     }
 
-    public void handleTagButtonClicked(ActionEvent event) {
-        PopOver popOver = new PopOver();
-
-        VBox vBox = new VBox();
-
-        popOver.setContentNode(vBox);
-
-        popOver.show(tagButton);  // The target is the button.
-        // popOver.getRoot().getStylesheets().add()
-    }
+    // public void handleTagButtonClicked(ActionEvent event) {
+    //     PopOver popOver = new PopOver();
+    //
+    //     VBox vBox = new VBox();
+    //
+    //     popOver.setContentNode(vBox);
+    //
+    //     popOver.show(tagButton);  // The target is the button.
+    //     // popOver.getRoot().getStylesheets().add()
+    // }
 
     private void showNoPageLoadedAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -166,7 +170,7 @@ public class MainController {
         alert.showAndWait();
     }
 
-    public void handleSingleDocButtonClicked(ActionEvent event) {
+    private void showRightPanel() {
         if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
             showNoPageLoadedAlert();
         } else {
@@ -191,24 +195,29 @@ public class MainController {
         }
     }
 
+    public void handleSingleDocButtonClicked(ActionEvent event) {
+        model.prechecked = Prechecked.NONE;
+        showRightPanel();
+    }
+
     public void handlePOSButtonClicked(ActionEvent event) throws IOException {
-        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
-            showNoPageLoadedAlert();
-        } else {
-            rightAnchorPane.getChildren().clear();
-            rightAnchorPane.getChildren().add(FXMLLoader
-                    .load(getClass().getClassLoader().getResource("views/POSParameterPanel.fxml")));
-        }
+        model.prechecked = Prechecked.POS;
+        showRightPanel();
     }
 
     public void handleNERButtonClicked(ActionEvent event) throws IOException {
-        if (HTMLHelper.isDocumentNull(this.webEngine.getDocument())) {
-            showNoPageLoadedAlert();
-        } else {
-            rightAnchorPane.getChildren().clear();
-            rightAnchorPane.getChildren().add(FXMLLoader
-                    .load(getClass().getClassLoader().getResource("views/NERParameterPanel.fxml")));
-        }
+        model.prechecked = Prechecked.NER;
+        showRightPanel();
+    }
+
+    public void onWordFrequencyButtonClicked(ActionEvent event) {
+        model.prechecked = Prechecked.WORD_FREQ;
+        showRightPanel();
+    }
+
+    public void onWordCloudButtonClicked(ActionEvent event) {
+        model.prechecked = Prechecked.WORD_CLOUD;
+        showRightPanel();
     }
 
     public void loadHTMLFileToDisplay() throws MalformedURLException {

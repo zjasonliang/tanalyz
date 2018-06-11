@@ -465,9 +465,24 @@
     -fx-padding: 0.0;
 }
 
+/*.progress-bar > .bar {*/
+    /*-fx-background-color: -swatch-500;*/
+    /*-fx-background-radius: 2.0;*/
+    /*-fx-background-insets: 0.0;*/
+    /*-fx-border-width: 0.0;*/
+    /*-fx-effect: null;*/
+/*}*/
+
 .progress-bar > .bar {
-    -fx-background-color: -swatch-500;
-    -fx-background-radius: 2.0;
+    -fx-background-color: linear-gradient(
+            from 0px .75em to .75em 0px,
+            repeat,
+            -fx-accent 0%,
+            -fx-accent 49%,
+            derive(-fx-accent, 30%) 50%,
+            derive(-fx-accent, 30%) 99%
+    );
+    -fx-background-radius: 1.0;
     -fx-background-insets: 0.0;
     -fx-border-width: 0.0;
     -fx-effect: null;

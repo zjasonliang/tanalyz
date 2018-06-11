@@ -25,16 +25,16 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem fx:id="newTextButton" mnemonicParsing="false" onAction="#showEditor" text="New Text" />
-            <MenuItem mnemonicParsing="false" onAction="#loadHTMLFileToDisplay" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
+            <MenuItem fx:id="newTextButton" disable="true" mnemonicParsing="false" onAction="#showEditor" text="New Text" />
+            <MenuItem disable="true" mnemonicParsing="false" onAction="#loadHTMLFileToDisplay" text="Open…" />
+            <Menu disable="true" mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#closeViewWindow" text="Close" />
-            <MenuItem mnemonicParsing="false" onAction="#saveHTMLPageAs" text="Save Page As…" />
+            <MenuItem disable="true" mnemonicParsing="false" onAction="#closeViewWindow" text="Close" />
+            <MenuItem disable="true" mnemonicParsing="false" onAction="#saveHTMLPageAs" text="Save Page As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <MenuItem disable="true" mnemonicParsing="false" text="Preferences…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem disable="true" mnemonicParsing="false" text="Quit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -57,24 +57,6 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="multipleDocsButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
-                     <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons/multiple-docs.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="tagButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handleTagButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
-                     <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons/tag_trans.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
                   <Button fx:id="posButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#handlePOSButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -93,17 +75,26 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="findButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="wordFrequencyButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#onWordFrequencyButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/icons/search.png" />
+                              <Image url="@../images/icons/frequency.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="wordCloudButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#onWordCloudButtonClicked" prefHeight="50.0" prefWidth="60.0" text="Button">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/icons/cloud.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
                   <HBox prefHeight="300.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -112,7 +103,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="moreButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
+                  <Button fx:id="moreButton" contentDisplay="GRAPHIC_ONLY" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="60.0" text="Button">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -178,7 +169,7 @@
         <AnchorPane fx:id="rightAnchorPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="250.0" />
       </items>
     </SplitPane>
-    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="ALWAYS">
       <children>
         <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
           <font>

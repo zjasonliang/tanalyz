@@ -12,11 +12,6 @@ import java.util.*;
 
 public class Text {
 
-    class IndexTextPiecePair {
-        Integer index;
-        String textPiece;
-    }
-
     private Map<String, WordFrequencyPair> wordFrequencyMap;
     private boolean isWordFrequencyMapInitialized;
     private List<WordFrequencyPair> wordFrequencySortedList;
@@ -43,6 +38,8 @@ public class Text {
     private Map<String, NER> wordNerMap;
     private boolean isNERWordsMapGenerated;
 
+    public String highlightedExtractedHTML;
+
 
 
     public Text(String originalHTML) {
@@ -53,13 +50,18 @@ public class Text {
     }
 
     private void wordSegmentExtractedPlainText(String separator) {
-        wordSegmentedExtractedPlainText = NLPServices.wordSegmentAsString(extractedPlainText, separator);
-        wordSeparatorForPlainText = separator;
+        ensureExtractedHTMLWordSegmented();
+
+        Document document = Jsoup.parse(wordSegmentedExtractedHTML);
+        String original = document.body().text();
+        wordSegmentedExtractedPlainText = original.replace(wordSeparatorForExtractedHTML, separator);
+        // wordSegmentedExtractedPlainText = NLPServices.wordSegmentAsString(extractedPlainText, separator);
+        // wordSeparatorForPlainText = separator;
     }
 
     private void ensureExtractedPainTextWordSegmented() {
         if (!isExtractedPlainTextWordSegmented) {
-            wordSegmentExtractedPlainText("`");
+            wordSegmentExtractedPlainText(" ");
             isExtractedPlainTextWordSegmented = true;
         }
     }
@@ -102,9 +104,9 @@ public class Text {
         }
     }
 
-    private void ensureWordSegmentedinExtractedHTML() {
-        ensureExtractedHTML();
-    }
+    // private void ensureWordSegmentedinExtractedHTML() {
+    //     ensureExtractedHTML();
+    // }
 
 
     private void ensureWordFrequencySortedListInitialized() {
@@ -197,6 +199,7 @@ public class Text {
     }
 
     public String getWordSegmentedExtractedPlainText() {
+        ensureExtractedPainTextWordSegmented();
         return wordSegmentedExtractedPlainText;
     }
 

@@ -22,13 +22,13 @@ public class ResultsWindowController {
 
         XYChart.Series series = new XYChart.Series();
 
-        System.out.println(NLPServices.stopWordSet);
+        // System.out.println(NLPServices.stopWordSet);
 
         int count = 0;
         for (WordFrequencyPair pair : list) {
             if (!NLPServices.stopWordSet.contains(pair.word)) {
                 series.getData().add(new XYChart.Data(pair.word, pair.frequency));
-                System.out.println("==>" + pair.word + "<==");
+                // System.out.println("==>" + pair.word + "<==");
                 count++;
             }
             if (count == 20) break;
