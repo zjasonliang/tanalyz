@@ -4,19 +4,17 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="250.0" spacing="2.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SingleDocParameterPanelController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="250.0" spacing="2.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox fx:id="controlHBox" spacing="20.0">
          <children>
-            <Button fx:id="analyzeButton" alignment="TOP_CENTER" mnemonicParsing="false" text="Analyze" />
+            <Button fx:id="analyzeButton" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#handleAnalyzeButtonClicked" text="Analyze" />
             <Button fx:id="stopButton" alignment="TOP_CENTER" mnemonicParsing="false" text="Stop" />
          </children>
          <padding>
@@ -108,7 +106,7 @@
       </VBox>
       <VBox fx:id="inputFileSettingsVBox" prefHeight="200.0" prefWidth="100.0" spacing="5.0" VBox.vgrow="NEVER">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Input File Settings">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Input Settings">
                <font>
                   <Font name="System Italic" size="13.0" />
                </font>
@@ -123,15 +121,7 @@
                         <Insets bottom="5.0" right="10.0" top="5.0" />
                      </HBox.margin>
                   </Text>
-                  <MenuButton mnemonicParsing="false" text="MenuButton">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Current Page" />
-                        <MenuItem mnemonicParsing="false" text="File" />
-                     </items>
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </MenuButton>
+                  <ChoiceBox fx:id="chooseFromChoiceBox" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox>
@@ -167,7 +157,7 @@
       </VBox>
       <VBox fx:id="outputFileSettingsVBox" prefHeight="200.0" prefWidth="100.0" spacing="5.0" VBox.vgrow="NEVER">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Output File Settings">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Output Settings">
                <font>
                   <Font name="System Italic" size="13.0" />
                </font>

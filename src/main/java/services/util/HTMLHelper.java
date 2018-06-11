@@ -10,6 +10,7 @@ import de.l3s.boilerpipe.sax.BoilerpipeSAXInput;
 import de.l3s.boilerpipe.sax.HTMLDocument;
 import de.l3s.boilerpipe.sax.HTMLHighlighter;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -105,6 +106,28 @@ public class HTMLHelper {
         return "<base href=\"" + url + "\" >"
                 + "<meta http-equiv=\"Content-Type\" content=\"text-html; charset=utf-8\" />"
                 + htmlHighlighter.process(url, extractor);
+    }
+
+    public static String getExtractedHTMLString(String originalHTML) {
+        try {
+            final BoilerpipeExtractor extractor = CommonExtractors.ARTICLE_EXTRACTOR;
+
+            final HTMLDocument htmlDocument = new HTMLDocument(originalHTML);
+            final TextDocument doc = new BoilerpipeSAXInput(htmlDocument.toInputSource())
+                    .getTextDocument();
+
+
+            extractor.process(doc);
+
+            final InputSource is = htmlDocument.toInputSource();
+
+            final HTMLHighlighter htmlHighlighter = HTMLHighlighter.newExtractingInstance();
+
+            return htmlHighlighter.process(doc, is);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

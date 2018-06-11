@@ -20,6 +20,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.DataModel;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
@@ -27,7 +28,7 @@ import org.w3c.dom.html.HTMLDocument;
 import services.nlp.Text;
 import services.util.HTMLHelper;
 
-import javax.sound.midi.Soundbank;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,14 +60,19 @@ public class MainController {
 
     private File openedHTMLFile;
 
-    private Text currenlyLoadedText;
+    private DataModel model;
 
     public void initialize() {
         this.setComponentDepths();
         this.webEngine = this.webView.getEngine();
+        model.webEngine = this.webEngine;
         // this.webEngine.load("https://en.wikipedia.org/wiki/Neuroscience");
         loadPage("https://en.wikipedia.org/wiki/Neuroscience");
         this.enableTextFieldAutoCompletion();
+    }
+
+    public void initDataModel(DataModel model) {
+        this.model = model;
     }
 
     public void loadPage(String url) {
@@ -80,7 +86,7 @@ public class MainController {
                         return;
                     }
                     String htmlString = HTMLHelper.getDocumentString(this.webEngine.getDocument());
-                    currenlyLoadedText = new Text(htmlString);
+                    model.currentlyLoadedText = new Text(htmlString);
                 } );
     }
 
@@ -101,7 +107,13 @@ public class MainController {
     }
 
     private void enableTextFieldAutoCompletion() {
-        String [] suggestions = {"http://baidu.com", "http://pku.edu.cn", "http://sina.com"};
+        String [] suggestions = {
+                "http://baidu.com",
+                "http://pku.edu.cn",
+                "http://sina.com",
+                "http://pku.edu.cn/about/index.htm"
+        };
+
         AutoCompletionBinding<String> binding = TextFields.bindAutoCompletion(urlTextField, suggestions);
 
         binding.setMinWidth(300);
@@ -118,7 +130,10 @@ public class MainController {
         loadPage(url);
     }
 
-    @FXML
+    public void onSearchButtonClicked(ActionEvent event) {
+        handleSearchRequest(event);
+    }
+
     public void onEnter(ActionEvent event) {
         if (Objects.equals("urlTextField", ((Control) event.getSource()).getId()))
             handleSearchRequest(event);
@@ -157,8 +172,19 @@ public class MainController {
         } else {
             rightAnchorPane.getChildren().clear();
             try {
-                rightAnchorPane.getChildren().add(FXMLLoader
-                        .load(getClass().getClassLoader().getResource("views/SingleDocParameterPanel.fxml")));
+                SingleDocParameterPanelController
+                        singleDocParameterPanelController =
+                        new SingleDocParameterPanelController();
+                singleDocParameterPanelController.initDataModel(model);
+
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("views/SingleDocParameterPanel.fxml"));
+                loader.setController(singleDocParameterPanelController);
+
+                rightAnchorPane.getChildren().add(loader.load());
+
+                // rightAnchorPane.getChildren().add(FXMLLoader
+                //         .load(getClass().getClassLoader().getResource("views/SingleDocParameterPanel.fxml")));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

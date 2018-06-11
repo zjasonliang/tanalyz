@@ -1,5 +1,6 @@
 package controllers;
 
+import com.sun.deploy.util.FXLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import model.DataModel;
 
 import java.io.IOException;
 
@@ -15,8 +17,14 @@ public class SplashScreenController {
     @FXML
     private StackPane rootStackPane;
 
+    private DataModel dataModel;
+
     public void initialize() {
         new SplashScreen().start();
+    }
+
+    public void initDataModel(DataModel model) {
+        this.dataModel = model;
     }
 
     class SplashScreen extends Thread {
@@ -33,14 +41,24 @@ public class SplashScreenController {
                     @Override
                     public void run() {
 
+                        // Parent root = null;
+
+                        MainController mainController = new MainController();
+                        mainController.initDataModel(dataModel);
+
+                        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("views/Main.fxml"));
+                        loader.setController(mainController);
+
                         Parent root = null;
 
                         try {
-                            root = FXMLLoader.load(getClass().getClassLoader().getResource("views/Main.fxml"));
+                            root = loader.load();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                         root.getStylesheets().add(getClass().getClassLoader().getResource("css/materialfx-v0_3.css").toString());
+
                         Stage stage = new Stage();
                         stage.setScene(new Scene(root));
 

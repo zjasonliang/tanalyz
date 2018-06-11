@@ -5,16 +5,13 @@ package services.nlp;
  * Natural Language Processing analysis,the results are in plain formats
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import services.spellcheck.SpellingCorrector;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NLPServices {
     private final static String api_key = "L188H9h095NEaKVUnnQz2XnBlzQVqTLNckqVRn7I";
@@ -56,6 +53,44 @@ public class NLPServices {
         put("Nh", NER.PERSON_NAME);
         put("Ns", NER.PLACE_NAME);
     }};
+
+
+    public static Set<String> stopWordSet = new HashSet <>();
+
+    static {
+        ClassLoader classLoader = NLPServices.class.getClassLoader();
+        File file = new File(classLoader.getResource("nlp/stopwords.txt").getFile());
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String temp;
+            while((temp = reader.readLine()) != null) {
+                stopWordSet.add(temp);
+            }
+            reader.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // public NLPServices() {
+    //     ClassLoader classLoader = NLPServices.class.getClassLoader();
+    //     File file = new File(classLoader.getResource("nlp/stopwords.txt").getFile());
+    //     BufferedReader reader;
+    //     try {
+    //         reader = new BufferedReader(new FileReader(file));
+    //         String temp;
+    //         while((temp = reader.readLine()) != null) {
+    //             stopWordSet.add(temp);
+    //         }
+    //         reader.close();
+    //     }
+    //     catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
 
     /**
@@ -125,7 +160,8 @@ public class NLPServices {
                     conn.getInputStream(),
                     "utf-8"));
             String line;
-            List <String> ws = new ArrayList <>();
+            List <String> wordSegmentedTextList = new ArrayList <>();
+
             while ((line = innet.readLine()) != null) {
                 StringBuilder sb = new StringBuilder(line);
                 for (int position = 0; position < line.length(); position++) {
@@ -133,15 +169,57 @@ public class NLPServices {
                         sb.replace(position, position + 1, separator);
                     }
                 }
-                ws.add(sb.toString());
+                wordSegmentedTextList.add(sb.toString());
             }
             innet.close();
-            return ws;
+            return wordSegmentedTextList;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+
+    public static String wordSegmentAsString(String sentences, String separator) {
+        String pattern = "ws";
+
+        try {
+            String text = URLEncoder.encode(sentences, "utf-8");
+            URL url = new URL("https://api.ltp-cloud.com/analysis/?"
+                    + "api_key=" + api_key + "&"
+                    + "text=" + text + "&"
+                    + "format=" + format + "&"
+                    + "pattern=" + pattern + "&"
+                    + "only_ner=true");
+            URLConnection conn = url.openConnection();
+            conn.connect();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(),
+                    "utf-8"));
+            String line;
+            // List <String> wordSegmentedTextList = new ArrayList <>();
+            StringJoiner wordSegmentedText = new StringJoiner(separator);
+
+            while ((line = bufferedReader.readLine()) != null) {
+                StringBuilder oneSentenceOfText = new StringBuilder(line);
+                for (int position = 0; position < line.length(); position++) {
+                    if (Character.isSpaceChar(line.charAt(position))) {
+                        oneSentenceOfText.replace(position, position + 1, separator);
+                    }
+                }
+                // wordSegmentedTextList.add(sb.toString());
+                wordSegmentedText.add(oneSentenceOfText.toString());
+            }
+
+            bufferedReader.close();
+            return wordSegmentedText.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     /**
      * For a given sentence,return the the	corresponding	POS	tag	sequence
@@ -151,7 +229,6 @@ public class NLPServices {
      */
     public static WordPOSPair[] getPosTags(String[] sentence) throws IOException {
         String pattern = "pos";
-        WordPOSPair[] namedPosTags = null;
         String text = sentence[0];
         for (int ord = 1; ord < sentence.length; ord++) {
             text += sentence[ord];
@@ -190,17 +267,70 @@ public class NLPServices {
             len += str.length;
         }
 
-        namedPosTags = new WordPOSPair[len];
+        WordPOSPair[] wordPOSPairs = new WordPOSPair[len];
         // initial();
         for (int i = 0; i < len; i++) {
-            namedPosTags[i] = new WordPOSPair();
-            namedPosTags[i].word = wordList.get(i);
+            wordPOSPairs[i] = new WordPOSPair();
+            wordPOSPairs[i].word = wordList.get(i);
             String str = posList.get(i);
-            namedPosTags[i].pos = posMap.get(str);
+            wordPOSPairs[i].pos = posMap.get(str);
         }
         inner.close();
 
-        return namedPosTags;
+        return wordPOSPairs;
+    }
+
+
+    public static WordPOSPair[] getPosTags(String sentences) {
+        try {
+            String pattern = "pos";
+            String text = URLEncoder.encode(sentences, "utf-8");
+            URL url = new URL("https://api.ltp-cloud.com/analysis/?"
+                    + "api_key=" + api_key + "&"
+                    + "text=" + text + "&"
+                    + "format=" + format + "&"
+                    + "pattern=" + pattern);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(),
+                    "utf-8"));
+
+            String readline;
+            List <String> wordList = new ArrayList <>();
+            List <String> posList = new ArrayList <>();
+
+
+            while ((readline = bufferedReader.readLine()) != null) {
+                // System.out.println(readline);
+                String[] str = readline.split(" ");
+                for (String s : str) {
+                    if (s.contains("_")) {
+                        wordList.add(s.substring(0, s.indexOf("_")));
+                        posList.add(s.substring(s.indexOf("_") + 1));
+                    }
+                }
+
+            }
+
+            WordPOSPair[] wordPOSPairs = new WordPOSPair[posList.size()];
+
+            // initial();
+            for (int i = 0; i < posList.size(); i++) {
+                wordPOSPairs[i] = new WordPOSPair();
+                wordPOSPairs[i].word = wordList.get(i);
+                String str = posList.get(i);
+                wordPOSPairs[i].pos = posMap.get(str);
+            }
+            bufferedReader.close();
+
+            return wordPOSPairs;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -210,7 +340,7 @@ public class NLPServices {
      * @param sentence an	array of words
      * @return an array of NamedEnitity objects(defined above)
      */
-    public static WordNamedEntityPair[] getNamedEntity(String[] sentence) throws IOException {
+    public static WordNamedEntityPair[] getNamedEntities(String[] sentence) throws IOException {
         String pattern = "ner";
         WordNamedEntityPair[] namedEntityTags = null;
         String text = sentence[0];
@@ -249,6 +379,48 @@ public class NLPServices {
         inner.close();
 
         return namedEntityTags;
+    }
+
+    public static WordNamedEntityPair[] getNamedEntities(String sentences) {
+        try {
+            String pattern = "ner";
+            WordNamedEntityPair[] namedEntityTags = null;
+            String text = URLEncoder.encode(sentences, "utf-8");
+            URL url = new URL("https://api.ltp-cloud.com/analysis/?"
+                    + "api_key=" + api_key + "&"
+                    + "text=" + text + "&"
+                    + "format=" + format + "&"
+                    + "pattern=" + pattern + "&"
+                    + "only_ner=true");
+            URLConnection conn = url.openConnection();
+            conn.connect();
+
+            BufferedReader inner = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(),
+                    "utf-8"));
+
+            List <String> wordList = new ArrayList <>();
+            List <String> entityList = new ArrayList <>();
+            String readline;
+            while ((readline = inner.readLine()) != null) {
+                wordList.add(readline.substring(0, readline.indexOf(" ")));
+                entityList.add(readline.substring(readline.indexOf(" ") + 1));
+            }
+            namedEntityTags = new WordNamedEntityPair[wordList.size()];
+            // initial();
+            for (int i = 0; i < wordList.size(); i++) {
+                namedEntityTags[i] = new WordNamedEntityPair();
+                namedEntityTags[i].word = wordList.get(i);
+                String str = entityList.get(i);
+                namedEntityTags[i].namedEntity = nerMap.get(str);
+            }
+            inner.close();
+
+            return namedEntityTags;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -293,7 +465,7 @@ public class NLPServices {
         sentence[1] = "国务院总理李克强昨天在中南海把美国部长安排的明明白白。";
         sentence[2] = "我昨天在图书馆砍了一本叫《骑马与砍杀》的书。";
 
-        // WordNamedEntityPair[] namedEntities = NLPServices.getNamedEntity(sentence);
+        // WordNamedEntityPair[] namedEntities = NLPServices.getNamedEntities(sentence);
         // for (int j = 0; j < namedEntities.length; j++)
         //     System.out.println(j + namedEntities[j].word + "――" + namedEntities[j].namedEntity);
         //
@@ -319,7 +491,7 @@ public class NLPServices {
         sentence[2]="美国在干嘛。";
         NLPServices demo=new NLPServices();
 
-        WordNamedEntityPair[] pos=demo.getNamedEntity(sentence);
+        WordNamedEntityPair[] pos=demo.getNamedEntities(sentence);
 
         for(int j=0;j<pos.length;j++)
             System.out.println(pos[j].word+" "+pos[j].namedEntity);

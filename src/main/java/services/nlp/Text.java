@@ -1,10 +1,13 @@
 package services.nlp;
 
-import org.ictclas4j.bean.Sentence;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
 import services.util.HTMLHelper;
 
-import javax.sound.midi.Soundbank;
 import java.util.*;
 
 public class Text {
@@ -18,38 +21,90 @@ public class Text {
     private boolean isWordFrequencyMapInitialized;
     private List<WordFrequencyPair> wordFrequencySortedList;
     private boolean isWordFrequencySortedListInitialized;
+    private boolean isExtracted;
 
     private String originalHTML;
     private String extractedHTML;
-    private String extractPlainText;
+    private String extractedPlainText;
 
-    private List<IndexTextPiecePair> originalTextPieces;
-    private List<IndexTextPiecePair> extractedTextPieces;
+    private String wordSegmentedExtractedPlainText;
+    private boolean isExtractedPlainTextWordSegmented;
+    private String wordSeparatorForPlainText;
+
+    private String wordSegmentedExtractedHTML;
+    private boolean isExtractedHTMLWordSegmented;
+    private String wordSeparatorForExtractedHTML;
+
+    private Map<POS, Set<String>> posWordsMap;
+    private Map<String, POS> wordPosMap;
+    private boolean isPOSWordsMapGenerated;
+
+    private Map<NER, Set<String>> nerWordsMap;
+    private Map<String, NER> wordNerMap;
+    private boolean isNERWordsMapGenerated;
+
 
 
     public Text(String originalHTML) {
         this.originalHTML = originalHTML;
-        this.extractPlainText = HTMLHelper.getExtractedText(originalHTML);
+        this.extractedPlainText = HTMLHelper.getExtractedText(originalHTML);
         this.isWordFrequencyMapInitialized = false;
         this.isWordFrequencySortedListInitialized = false;
     }
 
-
-
-    /**
-     * initialize originalTextPieces
-     */
-    private void indexOriginalTextPieces() {
-
+    private void wordSegmentExtractedPlainText(String separator) {
+        wordSegmentedExtractedPlainText = NLPServices.wordSegmentAsString(extractedPlainText, separator);
+        wordSeparatorForPlainText = separator;
     }
 
-    /**
-     * initialize extractedTextPieces
-     */
-    private void indexExtractedTextPieces() {
-
+    private void ensureExtractedPainTextWordSegmented() {
+        if (!isExtractedPlainTextWordSegmented) {
+            wordSegmentExtractedPlainText("`");
+            isExtractedPlainTextWordSegmented = true;
+        }
     }
 
+
+    private void wordSegmentExtractedHTML(String separator) {
+        ensureExtractedHTML();
+
+        Document document = Jsoup.parse(extractedHTML);
+        Elements elements = document.body().getAllElements();
+
+        wordSeparatorForExtractedHTML = separator;
+
+        for (Element element : elements) {
+            List <TextNode> textNodeList = element.textNodes();
+
+            for (TextNode textNode : textNodeList) {
+                String original = textNode.text();
+                // System.out.println("====> " + original.trim() + "<=====");
+                if (original.trim().length() > 10 ) {
+                    DataNode dataNode = new DataNode(NLPServices.wordSegmentAsString(original, separator));
+                    textNode.replaceWith(dataNode);
+                }
+            }
+        }
+        wordSegmentedExtractedHTML = document.toString();
+    }
+
+    private void ensureExtractedHTMLWordSegmented() {
+        if (!isExtractedHTMLWordSegmented) {
+            wordSegmentExtractedHTML("`");
+            isExtractedHTMLWordSegmented = true;
+        }
+    }
+
+    private void ensureExtractedHTML() {
+        if (!isExtracted) {
+            extractedHTML = HTMLHelper.getExtractedHTMLString(originalHTML);
+            isExtracted = true;
+        }
+    }
+
+    private void ensureWordSegmentedinExtractedHTML() {
+        ensureExtractedHTML();
+    }
 
 
     private void ensureWordFrequencySortedListInitialized() {
@@ -66,12 +121,14 @@ public class Text {
         if (!isWordFrequencyMapInitialized) {
             wordFrequencyMap = new HashMap <>();
 
-            List<String> segmentedTextList = NLPServices.wordSegment(extractPlainText, "`");
+            List<String> segmentedTextList = NLPServices.wordSegment(extractedPlainText, "`");
 
             for (String sentence : segmentedTextList) {
                 String [] wordList = sentence.split("`");
 
                 for (String word : wordList) {
+                    if ("".equals(word)) continue;
+
                     if (wordFrequencyMap.containsKey(word))
                         wordFrequencyMap.put(word, new WordFrequencyPair(word, wordFrequencyMap.get(word).frequency + 1));
                     else
@@ -80,6 +137,45 @@ public class Text {
             }
 
             isWordFrequencyMapInitialized = true;
+        }
+    }
+
+    public void ensureGeneratePOSWordsMap() {
+        if (!isPOSWordsMapGenerated) {
+            posWordsMap = new HashMap <>();
+            wordPosMap = new HashMap <>();
+
+            WordPOSPair [] wordPOSPairs = NLPServices.getPosTags(extractedPlainText);
+
+            for (WordPOSPair pair : wordPOSPairs) {
+                if (!posWordsMap.containsKey(pair.pos)) {
+                    posWordsMap.put(pair.pos, new HashSet <>());
+                }
+                posWordsMap.get(pair.pos).add(pair.word);
+
+                wordPosMap.put(pair.word, pair.pos);
+            }
+
+            isPOSWordsMapGenerated = true;
+        }
+    }
+
+    public void ensureGenerateNERWordsMap() {
+        if (!isNERWordsMapGenerated) {
+            nerWordsMap = new HashMap <>();
+            wordNerMap = new HashMap <>();
+
+            WordNamedEntityPair [] wordNamedEntityPairs = NLPServices.getNamedEntities(extractedPlainText);
+            for (WordNamedEntityPair pair : wordNamedEntityPairs) {
+                if (!nerWordsMap.containsKey(pair.namedEntity)) {
+                    nerWordsMap.put(pair.namedEntity, new HashSet <>());
+                }
+                nerWordsMap.get(pair.namedEntity).add(pair.word);
+
+                wordNerMap.put(pair.word, pair.namedEntity);
+            }
+
+            isNERWordsMapGenerated = true;
         }
     }
 
@@ -96,15 +192,51 @@ public class Text {
 
 
 
-    public String getExtractPlainText() {
-        return extractPlainText;
+    public String getExtractedPlainText() {
+        return extractedPlainText;
+    }
+
+    public String getWordSegmentedExtractedPlainText() {
+        return wordSegmentedExtractedPlainText;
     }
 
     public String getOriginalHTML() {
         return originalHTML;
     }
 
+    public String getWordSegmentedExtractedHTML() {
+        ensureExtractedHTMLWordSegmented();
+        return wordSegmentedExtractedHTML;
+    }
 
+    public String getWordSeparatorForExtractedHTML() {
+        return wordSeparatorForExtractedHTML;
+    }
+
+    public String getExtractedHTML() {
+        ensureExtractedHTML();
+        return extractedHTML;
+    }
+
+    public Map <POS, Set <String>> getPosWordsMap() {
+        ensureGeneratePOSWordsMap();
+        return posWordsMap;
+    }
+
+    public Map <String, POS> getWordPosMap() {
+        ensureGeneratePOSWordsMap();
+        return wordPosMap;
+    }
+
+    public Map <NER, Set <String>> getNerWordsMap() {
+        ensureGenerateNERWordsMap();
+        return nerWordsMap;
+    }
+
+    public Map <String, NER> getWordNerMap() {
+        ensureGenerateNERWordsMap();
+        return wordNerMap;
+    }
 
     public static void main(String[] args) {
         String htmlString = "<!doctype html>\n" +
@@ -707,13 +839,39 @@ public class Text {
                 "</body></html>";
 
         Text text = new Text(htmlString);
-        System.out.println(text.getExtractPlainText());
+        // System.out.println(text.getExtractedHTML());
+        System.out.println(text.getWordSegmentedExtractedHTML());
 
-        List<WordFrequencyPair> list = text.getWordFrequencySortedList();
 
-        for (WordFrequencyPair item : list) {
-            System.out.println(item);
+        // text.wordSegmentExtractedPlainText("`");
+
+        // System.out.println(text.getExtractedPlainText());
+
+        // for (POS pos : text.getPosWordsMap().keySet()) {
+        //     System.out.println(pos);
+        //     System.out.println(text.getPosWordsMap().get(pos).toString());
+        // }
+
+        for (NER ner : text.getNerWordsMap().keySet()) {
+            System.out.println(ner);
+            System.out.println(text.getNerWordsMap().get(ner).toString());
         }
+
+        // System.out.println(text.getExtractedPlainText());
+        // System.out.println(text.getExtractedHTML());
+        // org.jsoup.nodes.Document document = Jsoup.parse(text.getExtractedHTML());
+        // Elements elements = document.body().getAllElements();
+
+        // for (Element element : elements) {
+        //     List <TextNode> textNodeList = element.textNodes();
+        //     for (TextNode textNode : textNodeList) {
+        //         // System.out.println(textNode.text());
+        //         String original = textNode.text();
+        //         // DataNode dataNode = new DataNode(NLPServices.wordSegment(original, "`"));
+        //         // textNode.replaceWith(NLPServices.wordSegment(textNode.text(), "`"));
+        //     }
+        //
+        // }
     }
 
 }

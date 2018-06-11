@@ -1,8 +1,8 @@
 package services.nlp;
 
 public class WordFrequencyPair {
-    String word;
-    Integer frequency;
+    public String word;
+    public Integer frequency;
 
     public WordFrequencyPair(String word, Integer frequency) {
         this.word = word;
