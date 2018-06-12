@@ -23,6 +23,7 @@ import services.nlp.NER;
 import services.nlp.POS;
 import services.util.imgutil.ImageViewer;
 import services.wordcloud.CircularWordCloud;
+import sun.misc.resources.Messages_de;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -195,6 +196,15 @@ public class SingleDocParameterPanelController {
     }
 
     public void handleAnalyzeButtonClicked() {
+
+        if (model.currentlyLoadedText.getTextLength() > 2000) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Text too Long Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Length of text in page exceeds 2000 chinese characters. Please try a shorter one.");
+            alert.showAndWait();
+            return;
+        }
 
         analyzeButton.setDisable(true);
         stopButton.setDisable(false);

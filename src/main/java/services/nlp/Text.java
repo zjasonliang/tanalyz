@@ -22,6 +22,8 @@ public class Text {
     private String extractedHTML;
     private String extractedPlainText;
 
+    private long textLength;
+
     private String wordSegmentedExtractedPlainText;
     private boolean isExtractedPlainTextWordSegmented;
     private String wordSeparatorForPlainText;
@@ -42,9 +44,11 @@ public class Text {
 
 
 
+
     public Text(String originalHTML) {
         this.originalHTML = originalHTML;
         this.extractedPlainText = HTMLHelper.getExtractedText(originalHTML);
+        this.textLength = this.extractedPlainText.length();
         this.isWordFrequencyMapInitialized = false;
         this.isWordFrequencySortedListInitialized = false;
     }
@@ -239,6 +243,10 @@ public class Text {
     public Map <String, NER> getWordNerMap() {
         ensureGenerateNERWordsMap();
         return wordNerMap;
+    }
+
+    public long getTextLength() {
+        return textLength;
     }
 
     public static void main(String[] args) {
@@ -846,35 +854,11 @@ public class Text {
         System.out.println(text.getWordSegmentedExtractedHTML());
 
 
-        // text.wordSegmentExtractedPlainText("`");
-
-        // System.out.println(text.getExtractedPlainText());
-
-        // for (POS pos : text.getPosWordsMap().keySet()) {
-        //     System.out.println(pos);
-        //     System.out.println(text.getPosWordsMap().get(pos).toString());
-        // }
-
         for (NER ner : text.getNerWordsMap().keySet()) {
             System.out.println(ner);
             System.out.println(text.getNerWordsMap().get(ner).toString());
         }
 
-        // System.out.println(text.getExtractedPlainText());
-        // System.out.println(text.getExtractedHTML());
-        // org.jsoup.nodes.Document document = Jsoup.parse(text.getExtractedHTML());
-        // Elements elements = document.body().getAllElements();
-
-        // for (Element element : elements) {
-        //     List <TextNode> textNodeList = element.textNodes();
-        //     for (TextNode textNode : textNodeList) {
-        //         // System.out.println(textNode.text());
-        //         String original = textNode.text();
-        //         // DataNode dataNode = new DataNode(NLPServices.wordSegment(original, "`"));
-        //         // textNode.replaceWith(NLPServices.wordSegment(textNode.text(), "`"));
-        //     }
-        //
-        // }
     }
 
 }
