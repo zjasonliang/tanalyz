@@ -55,7 +55,7 @@ public class NLPServices {
     }};
 
 
-    public static Set<String> stopWordSet = new HashSet <>();
+    public static Set <String> stopWordSet = new HashSet <>();
 
     static {
         ClassLoader classLoader = NLPServices.class.getClassLoader();
@@ -64,34 +64,14 @@ public class NLPServices {
         try {
             reader = new BufferedReader(new FileReader(file));
             String temp;
-            while((temp = reader.readLine()) != null) {
+            while ((temp = reader.readLine()) != null) {
                 stopWordSet.add(temp);
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-    // public NLPServices() {
-    //     ClassLoader classLoader = NLPServices.class.getClassLoader();
-    //     File file = new File(classLoader.getResource("nlp/stopwords.txt").getFile());
-    //     BufferedReader reader;
-    //     try {
-    //         reader = new BufferedReader(new FileReader(file));
-    //         String temp;
-    //         while((temp = reader.readLine()) != null) {
-    //             stopWordSet.add(temp);
-    //         }
-    //         reader.close();
-    //     }
-    //     catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
 
     /**
      * For a given sentence,	return the spilt result
@@ -465,37 +445,11 @@ public class NLPServices {
         sentence[1] = "国务院总理李克强昨天在中南海把美国部长安排的明明白白。";
         sentence[2] = "我昨天在图书馆砍了一本叫《骑马与砍杀》的书。";
 
-        // WordNamedEntityPair[] namedEntities = NLPServices.getNamedEntities(sentence);
-        // for (int j = 0; j < namedEntities.length; j++)
-        //     System.out.println(j + namedEntities[j].word + "――" + namedEntities[j].namedEntity);
-        //
-        //
-        // WordPOSPair[] pos = NLPServices.getPosTags(sentence);
-        //
-        // for (WordPOSPair item : pos) {
-        //     System.out.println(item.word + "   " + item.pos);
-        // }
-
-        List<String> results = NLPServices.wordSegment(sentence, "`");
+        List <String> results = NLPServices.wordSegment(sentence, "`");
 
         for (String item : results) {
             System.out.println(item);
         }
     }
-
-    /*
-    public static void main(String[] args) throws IOException{
-        String[] sentence=new String[3];
-        sentence[0]="I don't like the weather and America";
-        sentence[1]="你喜欢他吗";
-        sentence[2]="美国在干嘛。";
-        NLPServices demo=new NLPServices();
-
-        WordNamedEntityPair[] pos=demo.getNamedEntities(sentence);
-
-        for(int j=0;j<pos.length;j++)
-            System.out.println(pos[j].word+" "+pos[j].namedEntity);
-    }
-    */
 
 }

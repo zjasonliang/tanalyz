@@ -6,8 +6,8 @@ import javafx.scene.image.ImageView;
 import model.DataModel;
 
 public class ImageViewerController {
-    @FXML private ImageView imageView;
-
+    @FXML
+    private ImageView imageView;
     private DataModel model;
 
     public void initialize() {

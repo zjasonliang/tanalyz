@@ -14,7 +14,7 @@ import javax.print.Doc;
 import javax.xml.crypto.Data;
 
 /**
- * This class highlight the HTML files
+ * This class provides utility functions for highlighting words in HTML.
  */
 public class HTMLHighlighter {
 
@@ -53,22 +53,21 @@ public class HTMLHighlighter {
     }
 
 
+    /**
+     * This methods highlights words of given POS or NER types in the extracted HTML of the given Text object.
+     *
+     * @param text  a Text object storing the text data
+     * @param posList   an list of POS that need to be highlighted
+     * @param nerList   an list of NER that need to be highlighted
+     * @return  highlighted HTML
+     */
     public static String highlightWordsInExtractedHTML(Text text, List<POS> posList, List<NER> nerList) {
         Document document = Jsoup.parse(text.getWordSegmentedExtractedHTML());
         Elements elements = document.body().getAllElements();
 
-        // System.out.println(text.getPosWordsMap().toString());
-        // System.out.println(text.getNerWordsMap().toString());
-
-
         String separator = text.getWordSeparatorForExtractedHTML();
 
-
-
         for (POS pos : posList) {
-
-            // System.out.println("===POS" + pos);
-            // System.out.println(text.getPosWordsMap().get(pos));
 
             for (String word : text.getPosWordsMap().get(pos)) {
 
@@ -79,23 +78,13 @@ public class HTMLHighlighter {
 
                 String replacement = separator + "<span " + pos.colorStyle + ">" + word + "</span>" + separator;
 
-
-                // System.out.println("elements == " + elements.size());
-
                 for (Element element : elements) {
                     List <TextNode> textNodeList = element.textNodes();
 
-                    // System.out.println(textNodeList);
-
                     for (TextNode textNode : textNodeList) {
                         String original = textNode.text();
-                        // System.out.println("==========");
-                        // System.out.println(word);
-                        // System.out.println(original);
-                        // TextNode newTextNode = new TextNode(original.replaceAll(separator + word + separator, separator + "<span " + pos.colorStyle + ">" + word + "</span>" + separator));
                         TextNode newTextNode = new TextNode(original.replaceAll(pattern, replacement));
                         textNode.replaceWith(newTextNode);
-                        // System.out.println(textNode.text());
                     }
                 }
             }
@@ -115,7 +104,6 @@ public class HTMLHighlighter {
                     List <TextNode> textNodeList = element.textNodes();
                     for (TextNode textNode : textNodeList) {
                         String original = textNode.text();
-                        // TextNode newTextNode = new TextNode(original.replaceAll(separator + word + separator, separator + "<span " + ner.colorStyle + ">" + word + "</span>" + separator));
                         TextNode newTextNode = new TextNode(original.replaceAll(pattern, replacement));
                         textNode.replaceWith(newTextNode);
                     }
@@ -133,7 +121,6 @@ public class HTMLHighlighter {
             }
         }
 
-        // System.out.println(document.toString());
         return document.toString();
     }
 

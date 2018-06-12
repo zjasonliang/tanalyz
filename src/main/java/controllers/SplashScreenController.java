@@ -13,6 +13,9 @@ import model.DataModel;
 
 import java.io.IOException;
 
+/**
+ * Controller for the welcome screen
+ */
 public class SplashScreenController {
     @FXML
     private StackPane rootStackPane;
@@ -36,7 +39,6 @@ public class SplashScreenController {
                 /*
                 JavaFX uses only one thread to update its GUI. You can't change the GUI from other threads.
                  */
-
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {

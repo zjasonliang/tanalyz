@@ -29,12 +29,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for parameter panel (right panel in the main window)
+ */
 public class SingleDocParameterPanelController {
 
     @FXML
     private VBox analyzeButtonVBox, analyzeVBox;
 
-    @FXML private ProgressBar analysisProgressBar;
+    @FXML
+    private ProgressBar analysisProgressBar;
 
     @FXML
     private HBox controlHBox;
@@ -47,9 +51,10 @@ public class SingleDocParameterPanelController {
             locationCheckBox, personCheckBox, organizationCheckBox,
             wordFreqCheckBox, wordCloudCheckBox;
 
-    @FXML private ChoiceBox<String> chooseFromChoiceBox;
+    @FXML
+    private ChoiceBox <String> chooseFromChoiceBox;
 
-    Task<Void> analysisTask;
+    Task <Void> analysisTask;
 
     DataModel model;
 
@@ -57,7 +62,6 @@ public class SingleDocParameterPanelController {
 
     public void initialize() {
         setComponentDepths();
-        // initChooseFromChoiceBox();
         initAnalyzeProgressBar();
         initPrechecked();
 
@@ -91,12 +95,6 @@ public class SingleDocParameterPanelController {
                 break;
         }
     }
-
-    // private void initChooseFromChoiceBox() {
-    //     chooseFromChoiceBox.setStyle("-fx-font-size:11");
-    //     chooseFromChoiceBox.getItems().addAll("Current Page", "File");
-    //     chooseFromChoiceBox.setValue("Current Page");
-    // }
 
     private void initAnalyzeProgressBar() {
         // analysisProgressBar.setStyle("-fx-padding: 0.05em;");
@@ -215,8 +213,8 @@ public class SingleDocParameterPanelController {
                 analysisProgressBar.setVisible(true);
                 analysisProgressBar.setProgress(0);
 
-                List<POS> posList = new ArrayList <POS>();
-                List<NER> nerList = new ArrayList <NER>();
+                List <POS> posList = new ArrayList <POS>();
+                List <NER> nerList = new ArrayList <NER>();
 
                 if (nounCheckBox.isSelected()) {
                     posList.add(POS.GENERAL_NOUN);
@@ -250,22 +248,7 @@ public class SingleDocParameterPanelController {
                     nerList.add(NER.INSTITUTION_NAME);
                 }
 
-                // List<POS> posList = new ArrayList <POS>() {{
-                //     add(POS.ADVERB);
-                //     add(POS.ADJECTIVE);
-                //     add(POS.TEMPORAL_NOUN);
-                // }};
-
-                // analysisProgressBar.setProgress(0.1);
                 progressBarTo(analysisProgressBar, 0.1);
-
-                // List<NER> nerList = new ArrayList <NER>() {{
-                //     add(NER.INSTITUTION_NAME);
-                //     add(NER.PERSON_NAME);
-                //     add(NER.PLACE_NAME);
-                // }};
-
-                // analysisProgressBar.setProgress(0.2);
 
                 if (wordCloudCheckBox.isSelected()) {
                     String text = model.currentlyLoadedText.getWordSegmentedExtractedPlainText();
@@ -287,7 +270,6 @@ public class SingleDocParameterPanelController {
 
                 Platform.runLater(() -> {
                     model.webEngine.loadContent(model.currentlyLoadedText.highlightedExtractedHTML);
-                    // analysisProgressBar.setProgress(0.9);
 
                     if (wordFreqCheckBox.isSelected()) {
                         showResultsWindow();
@@ -302,7 +284,6 @@ public class SingleDocParameterPanelController {
                 return null;
             }
         };
-
         new Thread(analysisTask).start();
     }
 }

@@ -10,6 +10,9 @@ import services.util.HTMLHelper;
 
 import java.util.*;
 
+/**
+ * A data structure that stores all the information of a text being processed
+ */
 public class Text {
 
     private Map<String, WordFrequencyPair> wordFrequencyMap;
@@ -41,9 +44,6 @@ public class Text {
     private boolean isNERWordsMapGenerated;
 
     public String highlightedExtractedHTML;
-
-
-
 
     public Text(String originalHTML) {
         this.originalHTML = originalHTML;
@@ -107,11 +107,6 @@ public class Text {
             isExtracted = true;
         }
     }
-
-    // private void ensureWordSegmentedinExtractedHTML() {
-    //     ensureExtractedHTML();
-    // }
-
 
     private void ensureWordFrequencySortedListInitialized() {
         ensureWordFrequencyMapInitialized();

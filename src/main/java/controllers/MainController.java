@@ -38,7 +38,9 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 
-
+/**
+ * Controller for the main window.
+ */
 public class MainController {
 
     @FXML
@@ -68,7 +70,6 @@ public class MainController {
         this.setComponentDepths();
         this.webEngine = this.webView.getEngine();
         model.webEngine = this.webEngine;
-        // this.webEngine.load("https://en.wikipedia.org/wiki/Neuroscience");
         loadPage("http://pku.edu.cn/about/index.htm");
         this.enableTextFieldAutoCompletion();
     }
@@ -81,24 +82,21 @@ public class MainController {
         this.webEngine.load(url);
 
         this.webEngine.getLoadWorker().stateProperty().addListener(
-                (ObservableValue<? extends Worker.State> observable,
+                (ObservableValue <? extends Worker.State> observable,
                  Worker.State oldValue,
                  Worker.State newValue) -> {
-                    if( newValue != Worker.State.SUCCEEDED ) {
+                    if (newValue != Worker.State.SUCCEEDED) {
                         return;
                     }
                     String htmlString = HTMLHelper.getDocumentString(this.webEngine.getDocument());
                     model.currentlyLoadedText = new Text(htmlString);
-                } );
+                });
     }
 
     private void setComponentDepths() {
         JFXDepthManager.setDepth(singleDocButton, 2);
-        // JFXDepthManager.setDepth(multipleDocsButton, 2);
-        // JFXDepthManager.setDepth(tagButton, 2);
         JFXDepthManager.setDepth(posButton, 2);
         JFXDepthManager.setDepth(nerButton, 2);
-        // JFXDepthManager.setDepth(findButton, 2);
         JFXDepthManager.setDepth(wordFrequencyButton, 2);
         JFXDepthManager.setDepth(wordCloudButton, 2);
         JFXDepthManager.setDepth(settingsButton, 2);
@@ -111,14 +109,14 @@ public class MainController {
     }
 
     private void enableTextFieldAutoCompletion() {
-        String [] suggestions = {
+        String[] suggestions = {
                 "http://baidu.com",
                 "http://pku.edu.cn",
                 "http://sina.com",
                 "http://pku.edu.cn/about/index.htm"
         };
 
-        AutoCompletionBinding<String> binding = TextFields.bindAutoCompletion(urlTextField, suggestions);
+        AutoCompletionBinding <String> binding = TextFields.bindAutoCompletion(urlTextField, suggestions);
 
         binding.setMinWidth(300);
     }
@@ -130,7 +128,6 @@ public class MainController {
             url = "http://" + url;
         }
 
-        // this.webEngine.load(url);
         loadPage(url);
     }
 
@@ -150,17 +147,6 @@ public class MainController {
         stage.setScene(new Scene(root));
         stage.show();
     }
-
-    // public void handleTagButtonClicked(ActionEvent event) {
-    //     PopOver popOver = new PopOver();
-    //
-    //     VBox vBox = new VBox();
-    //
-    //     popOver.setContentNode(vBox);
-    //
-    //     popOver.show(tagButton);  // The target is the button.
-    //     // popOver.getRoot().getStylesheets().add()
-    // }
 
     private void showNoPageLoadedAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -185,9 +171,6 @@ public class MainController {
                 loader.setController(singleDocParameterPanelController);
 
                 rightAnchorPane.getChildren().add(loader.load());
-
-                // rightAnchorPane.getChildren().add(FXMLLoader
-                //         .load(getClass().getClassLoader().getResource("views/SingleDocParameterPanel.fxml")));
 
             } catch (IOException e) {
                 e.printStackTrace();
